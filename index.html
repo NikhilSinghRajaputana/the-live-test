@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Data Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Data Table</h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Idea Title</th>
+                <th>Category Name</th>
+                <th>Current Status</th>
+                <th>Points Earned</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <script>
+        // Function to fetch and display API data
+        function fetchData() {
+            fetch('https://651305288e505cebc2e976ff.mockapi.io/Nikigenerate')
+                .then((response) => response.json())
+                .then((data) => {
+                    const tableBody = document.querySelector('#data-table tbody');
+
+                    data.forEach((item) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.ideaTitle}</td>
+                            <td>${item.categoryName}</td>
+                            <td>${item.currentStatus}</td>
+                            <td>${item.pointsEarned}</td>
+                            <td>
+                                <button onclick="editItem(${item.id})">Edit</button>
+                                <button onclick="deleteItem(${item.id})">Delete</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Call the fetchData function to load data on page load
+        fetchData();
+
+        // Implement the editItem and deleteItem functions for CRUD operations
+        function editItem(id) {
+            // Implement edit logic here, e.g., show a form for editing
+            alert('Edit item with ID: ' + id);
+        }
+
+        function deleteItem(id) {
+            // Implement delete logic here, e.g., send a DELETE request to the API
+            if (confirm('Are you sure you want to delete this item?')) {
+                fetch(`https://651305288e505cebc2e976ff.mockapi.io/Nikigenerate/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(() => {
+                        alert('Item deleted successfully');
+                        // Refresh the table after deletion
+                        const tableBody = document.querySelector('#data-table tbody');
+                        tableBody.innerHTML = '';
+                        fetchData();
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting item:', error);
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
